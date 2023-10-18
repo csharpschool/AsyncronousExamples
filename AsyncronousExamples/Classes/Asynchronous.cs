@@ -8,10 +8,11 @@ namespace AsyncronousExamples.Classes;
 
 public class Asynchronous
 {
+    HttpServiceFileReader Reader { get; }
     const string CAT_PATH = "sample-data/cats.json";
     const string DOG_PATH = "sample-data/dogs.json";
 
-    HttpServiceFileReader Reader { get; }
+    CancellationTokenSource tokenSource = new();
 
     public Asynchronous(HttpServiceFileReader reader) => Reader = reader;
     
@@ -57,4 +58,23 @@ public class Asynchronous
 
         return result;
     }
+
+    public async Task<List<Animal>> GetWithCancellationAync()
+    {
+        tokenSource = new();
+        var result = (await ReadJsonFromFile<Dog>(DOG_PATH)) ?? new List<Dog>();
+
+        for (int i = 0; i < result.Count; i++)
+        {
+            if (tokenSource.Token.IsCancellationRequested) break;
+            
+            result[i].Race += " [ALTERED]";
+            await Task.Delay(1000); // Fake elapsed time when fetching data
+        }
+
+        return result?.Cast<Animal>().ToList() ?? new List<Animal>();
+    }
+
+    public void Cancel() => tokenSource.Cancel();
+    
 }

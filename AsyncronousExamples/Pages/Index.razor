@@ -9,6 +9,8 @@
 <button class="btn btn-primary" @onclick="async () => animals.AddRange(await a.GetCatsAync())">Get Cats</button>
 <button class="btn btn-primary" @onclick="async () => animals.AddRange(await a.GetAllAync())">Get All</button>
 <button class="btn btn-primary" @onclick="async () => animals.AddRange(await a.GetAnyAync())">Get Any</button>
+<button class="btn btn-primary" @onclick="async () => animals.AddRange(await a.GetWithCancellationAync())">Get With Cancellation</button>
+<button class="btn btn-warning" @onclick="() => a.Cancel()">Cancel</button>
 
 <br />
 <br />
