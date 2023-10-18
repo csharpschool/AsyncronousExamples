@@ -11,6 +11,7 @@
 <button class="btn btn-primary" @onclick="async () => animals.AddRange(await a.GetAnyAync())">Get Any</button>
 <button class="btn btn-primary" @onclick="async () => animals.AddRange(await a.GetWithCancellationAync())">Get With Cancellation</button>
 <button class="btn btn-warning" @onclick="() => a.Cancel()">Cancel</button>
+<button class="btn btn-primary" @onclick="() => times = a.CalcFactorials(0, 7000)">Multi-Threading</button>
 
 <br />
 <br />
@@ -33,8 +34,16 @@
     </tbody>
 </table>
 
+<br />
+<br />
+<h3>Foreach vs Parallel.ForEach</h3>
+<h4>@times.ForEachDuration</h4>
+<h4>@times.ParallelDuration</h4>
+
 
 @code{
     List<Animal> animals = new();
+    List<string> dishes = new();
+    (string ForEachDuration, string ParallelDuration) times;
 }
 

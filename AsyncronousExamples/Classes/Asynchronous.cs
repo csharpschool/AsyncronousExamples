@@ -1,8 +1,5 @@
-﻿using System.Diagnostics;
-using System.Net.Http.Json;
-using System.Reflection;
-using System.Threading.Tasks.Sources;
-using static AsyncronousExamples.Pages.FetchData;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace AsyncronousExamples.Classes;
 
@@ -76,5 +73,41 @@ public class Asynchronous
     }
 
     public void Cancel() => tokenSource.Cancel();
-    
+
+    #region Multi-Threading with Parallel.Foreach
+    long Factorial(int n)
+    {
+        long result = 1;
+        for (int i = 1; i <= n; i++)
+        {
+            result *= i;
+        }
+        return result;
+    }
+    public (string ForEachDuration, string ParallelDuration) CalcFactorials(int start, int end)
+    {
+        Stopwatch stopwatch = new Stopwatch();
+
+        // Using regular foreach
+        stopwatch.Start();
+        foreach (var number in Enumerable.Range(start, end - start + 1))
+        {
+            Factorial(number);
+        }
+        stopwatch.Stop();
+        var forEachDuration = $"Time taken with foreach: {stopwatch.ElapsedMilliseconds} ms";
+        stopwatch.Reset();
+
+        // Using Parallel.ForEach
+        stopwatch.Start();
+        Parallel.ForEach(Enumerable.Range(start, end - start + 1), number =>
+        {
+            Factorial(number);
+        });
+        stopwatch.Stop();
+        var parallelDuration = $"Time taken with Parallel.ForEach: {stopwatch.ElapsedMilliseconds} ms";
+
+        return (forEachDuration, parallelDuration);
+    }
+    #endregion
 }
